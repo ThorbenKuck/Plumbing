@@ -1,9 +1,12 @@
 package test;
 
+import com.google.inject.Inject;
+
 import java.util.function.Consumer;
 
-public class TestObjectHandler2 implements Consumer<TestObject> {
+public final class TestObjectHandler2 implements Consumer<TestObject> {
 
+	@Inject
 	public TestObjectHandler2(TestDependency testDependency) {
 
 	}

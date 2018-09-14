@@ -1,4 +1,4 @@
 package test;
 
-public class TestDependency {
+public final class TestDependency {
 }

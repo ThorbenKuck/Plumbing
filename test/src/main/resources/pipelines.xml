@@ -1,26 +1,25 @@
 <pipelines>
     <pipeline>
         <type>test.TestObject</type>
-        <name>SuperDuper</name>
+        <name>SuperDuper2</name>
         <handlers>
             <handler bean="test.TestObjectHandler3"/>
             <handler bean="test.TestObjectHandler2"/>
             <handler bean="test.TestObjectHandler1"/>
         </handlers>
-        <outputs>
-            <output>
-                <name>superDuper2</name>
-                <!--<typeConverter>test.MyTypeConverter</typeConverter>-->
-            </output>
-        </outputs>
     </pipeline>
     <pipeline>
-        <type>test.TestObject2</type>
-        <name>SuperDuper2</name>
+        <type>test.TestObject</type>
+        <name>SuperDuper</name>
         <handlers>
-            <handler bean="test.TestObject2Handler3"/>
-            <handler bean="test.TestObject2Handler2"/>
-            <handler bean="test.TestObject2Handler1"/>
+            <handler bean="test.TestObjectHandler1"/>
+            <handler bean="test.TestObjectHandler2"/>
+            <handler bean="test.TestObjectHandler3"/>
         </handlers>
+        <outputs>
+            <output>
+                <name>SuperDuper2</name>
+            </output>
+        </outputs>
     </pipeline>
 </pipelines>

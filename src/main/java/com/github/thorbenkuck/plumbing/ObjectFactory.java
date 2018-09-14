@@ -4,6 +4,6 @@ import com.github.thorbenkuck.plumbing.exceptions.FactoryException;
 
 public interface ObjectFactory {
 
-	<T> T create(Class<T> type) throws FactoryException;
+	<T> T create(final Class<T> type) throws FactoryException;
 
 }

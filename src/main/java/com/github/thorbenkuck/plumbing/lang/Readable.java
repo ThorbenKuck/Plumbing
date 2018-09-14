@@ -16,13 +16,13 @@ public interface Readable<T> {
 		return get() == null;
 	}
 
-	default void ifEmpty(Runnable runnable) {
+	default void ifEmpty(final Runnable runnable) {
 		if (isEmpty()) {
 			runnable.run();
 		}
 	}
 
-	default void ifNotEmpty(Consumer<T> consumer) {
+	default void ifNotEmpty(final Consumer<T> consumer) {
 		if (!isEmpty()) {
 			consumer.accept(get());
 		}

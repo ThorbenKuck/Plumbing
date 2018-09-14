@@ -8,21 +8,21 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-class NativePipeline<T> implements Pipeline<T> {
+final class NativePipeline<T> implements Pipeline<T> {
 
 	private final Deque<Function<T, T>> core = new ArrayDeque<>();
 	private final PipelineConnection<T> input = PipelineConnection.input(this);
 	private final PipelineConnection<T> output = PipelineConnection.output(this);
 
-	private Function<T, T> wrap(Consumer<T> consumer) {
+	private Function<T, T> wrap(final Consumer<T> consumer) {
 		return new ConsumerWrapper(consumer);
 	}
 
-	private Function<T, T> wrap(Runnable runnable) {
+	private Function<T, T> wrap(final Runnable runnable) {
 		return new RunnableWrapper(runnable);
 	}
 
-	private T dispatchRun(Deque<Function<T, T>> collection, T data) {
+	private T dispatchRun(final Deque<Function<T, T>> collection, final T data) {
 		final Value<T> dataValue = Value.of(data);
 		while (collection.peek() != null) {
 			final Function<T, T> currentElement = collection.removeFirst();
@@ -39,52 +39,52 @@ class NativePipeline<T> implements Pipeline<T> {
 	}
 
 	@Override
-	public void add(Runnable runnable) {
+	public final void add(final Runnable runnable) {
 		addFirst(runnable);
 	}
 
 	@Override
-	public void add(Consumer<T> consumer) {
+	public final void add(final Consumer<T> consumer) {
 		addFirst(consumer);
 	}
 
 	@Override
-	public void add(Function<T, T> function) {
+	public final void add(final Function<T, T> function) {
 		addFirst(function);
 	}
 
 	@Override
-	public void addFirst(Runnable runnable) {
+	public final void addFirst(final Runnable runnable) {
 		addFirst(wrap(runnable));
 	}
 
 	@Override
-	public void addFirst(Consumer<T> consumer) {
+	public final void addFirst(final Consumer<T> consumer) {
 		addFirst(wrap(consumer));
 	}
 
 	@Override
-	public void addFirst(Function<T, T> function) {
+	public final void addFirst(final Function<T, T> function) {
 		core.addFirst(function);
 	}
 
 	@Override
-	public void addLast(Runnable runnable) {
+	public final void addLast(final Runnable runnable) {
 		core.addLast(wrap(runnable));
 	}
 
 	@Override
-	public void addLast(Consumer<T> consumer) {
+	public final void addLast(final Consumer<T> consumer) {
 		core.addLast(wrap(consumer));
 	}
 
 	@Override
-	public void addLast(Function<T, T> function) {
+	public final void addLast(final Function<T, T> function) {
 		core.addLast(function);
 	}
 
 	@Override
-	public T apply(T input) {
+	public final T apply(T input) {
 		final Deque<Function<T, T>> copy;
 		synchronized (core) {
 			copy = new ArrayDeque<>(core);
@@ -94,28 +94,28 @@ class NativePipeline<T> implements Pipeline<T> {
 	}
 
 	@Override
-	public void breakConnections() {
+	public final void breakConnections() {
 		output.breakUp();
 		input.breakUp();
 	}
 
 	@Override
-	public void clear() {
+	public final void clear() {
 		core.clear();
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public final boolean isEmpty() {
 		return core.isEmpty();
 	}
 
 	@Override
-	public PipelineConnection<T> input() {
+	public final PipelineConnection<T> input() {
 		return input;
 	}
 
 	@Override
-	public PipelineConnection<T> output() {
+	public final PipelineConnection<T> output() {
 		return output;
 	}
 
@@ -123,27 +123,26 @@ class NativePipeline<T> implements Pipeline<T> {
 
 		private final Runnable runnable;
 
-		private RunnableWrapper(Runnable runnable) {
+		private RunnableWrapper(final Runnable runnable) {
 			this.runnable = runnable;
 		}
 
 		@Override
-		public T apply(T t) {
+		public final T apply(T t) {
 			runnable.run();
 			return t;
 		}
 
 		@Override
-		public int hashCode() {
-
+		public final int hashCode() {
 			return Objects.hash(runnable);
 		}
 
 		@Override
-		public boolean equals(Object object) {
+		public final boolean equals(final Object object) {
 			if (this == object) return true;
 			if (object == null || getClass() != object.getClass()) return false;
-			RunnableWrapper that = (RunnableWrapper) object;
+			final RunnableWrapper that = (RunnableWrapper) object;
 			return Objects.equals(runnable, that.runnable);
 		}
 
@@ -154,27 +153,26 @@ class NativePipeline<T> implements Pipeline<T> {
 
 		private final Consumer<T> consumer;
 
-		private ConsumerWrapper(Consumer<T> consumer) {
+		private ConsumerWrapper(final Consumer<T> consumer) {
 			this.consumer = consumer;
 		}
 
 		@Override
-		public T apply(T t) {
+		public final T apply(final T t) {
 			consumer.accept(t);
 			return t;
 		}
 
 		@Override
-		public boolean equals(Object object) {
+		public final boolean equals(final Object object) {
 			if (this == object) return true;
 			if (object == null || getClass() != object.getClass()) return false;
-			ConsumerWrapper that = (ConsumerWrapper) object;
+			final ConsumerWrapper that = (ConsumerWrapper) object;
 			return Objects.equals(consumer, that.consumer);
 		}
 
 		@Override
-		public int hashCode() {
-
+		public final int hashCode() {
 			return Objects.hash(consumer);
 		}
 	}

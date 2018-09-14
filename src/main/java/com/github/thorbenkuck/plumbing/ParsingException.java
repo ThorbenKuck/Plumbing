@@ -1,6 +1,6 @@
 package com.github.thorbenkuck.plumbing;
 
-public class ParsingException extends RuntimeException {
+public final class ParsingException extends RuntimeException {
 
 	ParsingException(String message) {
 		super(message);

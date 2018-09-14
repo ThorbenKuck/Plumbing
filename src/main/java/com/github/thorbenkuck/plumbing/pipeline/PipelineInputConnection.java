@@ -2,17 +2,17 @@ package com.github.thorbenkuck.plumbing.pipeline;
 
 import com.github.thorbenkuck.plumbing.lang.Value;
 
-class PipelineInputConnection<T> implements PipelineConnection<T> {
+final class PipelineInputConnection<T> implements PipelineConnection<T> {
 
 	private final Pipeline<T> root;
 	private final Value<Pipeline<T>> connected = Value.empty();
 
-	PipelineInputConnection(Pipeline<T> root) {
+	PipelineInputConnection(final Pipeline<T> root) {
 		this.root = root;
 	}
 
 	@Override
-	public void add(Pipeline<T> pipeline) {
+	public final void add(final Pipeline<T> pipeline) {
 		if (pipeline == root) {
 			return;
 		}
@@ -21,23 +21,23 @@ class PipelineInputConnection<T> implements PipelineConnection<T> {
 	}
 
 	@Override
-	public void remove(Pipeline<T> pipeline) {
+	public final void remove(final Pipeline<T> pipeline) {
 		breakUp();
 	}
 
 	@Override
-	public void transfer(T t) {
+	public final void transfer(final T t) {
 		root.apply(t);
 	}
 
 	@Override
-	public void transfer(Value<T> tValue) {
+	public final void transfer(final Value<T> tValue) {
 		tValue.set(root.apply(tValue.get()));
 	}
 
 	@Override
-	public void breakUp() {
-		Pipeline<T> old = connected.get();
+	public final void breakUp() {
+		final Pipeline<T> old = connected.get();
 		connected.clear();
 		if (old != null) {
 			old.output().remove(root);
@@ -48,7 +48,7 @@ class PipelineInputConnection<T> implements PipelineConnection<T> {
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public final boolean isEmpty() {
 		return connected.isEmpty();
 	}
 }

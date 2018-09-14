@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class PipelineXMLParser {
+final class PipelineXMLParser {
 
 	private final XMLUtils.IterableNodeList iterableNodeList;
 	private int pointer = 0;
 	private PipelineInformation currentPipeline;
 	private Node currentElement;
 
-	PipelineXMLParser(XMLUtils.IterableNodeList iterableNodeList) {
+	PipelineXMLParser(final XMLUtils.IterableNodeList iterableNodeList) {
 		this.iterableNodeList = iterableNodeList;
 	}
 
@@ -27,7 +27,7 @@ class PipelineXMLParser {
 	}
 
 	private void construct() throws ParsingException {
-		String typeName = findType();
+		final String typeName = findType();
 		Class<?> type;
 		try {
 			type = Class.forName(typeName);
@@ -35,19 +35,84 @@ class PipelineXMLParser {
 			throw new ParsingException("The provided class is not a valid class!", e);
 		}
 
-		List<Class<?>> handlers = getHandlers();
+		final List<Class<?>> handlers = getHandlers();
+
+		final String name = getName();
+
+		final List<OutputConnection> connections = getConnections();
 
 		Collections.reverse(handlers);
 
-		currentPipeline = new PipelineInformation(type, handlers);
+		currentPipeline = new PipelineInformation(type, handlers, name, connections);
 	}
 
-	private List<Class<?>> parseIndividualHandlers(NodeList handlerList) throws ParsingException {
-		List<Class<?>> returnValue = new ArrayList<>();
+	private List<OutputConnection> getConnections() {
+		final NodeList nodeList = currentElement.getChildNodes();
+
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			final Node node = nodeList.item(i);
+			if ("outputs".equals(node.getNodeName())) {
+				return parseOutputs(node.getChildNodes());
+			}
+		}
+
+		return Collections.emptyList();
+	}
+
+	private List<OutputConnection> parseOutputs(NodeList handlerList) {
+		final List<OutputConnection> returnValue = new ArrayList<>();
 		for (int i = 0; i < handlerList.getLength(); i++) {
-			Node current = handlerList.item(i);
+			final Node current = handlerList.item(i);
+
+			if ("output".equals(current.getNodeName())) {
+				String name = "";
+				Class<?> converter = null;
+				NodeList outputs = current.getChildNodes();
+				for (int j = 0; j < outputs.getLength(); j++) {
+					Node inner = outputs.item(j);
+					if ("name".equals(inner.getNodeName())) {
+						name = inner.getTextContent();
+					}
+					if ("typeConverter".equals(inner.getNodeName())) {
+						try {
+							converter = Class.forName(inner.getTextContent());
+						} catch (ClassNotFoundException e) {
+							throw new ParsingException(e);
+						}
+					}
+				}
+
+				returnValue.add(new OutputConnection(name, converter));
+			}
+		}
+
+		return returnValue;
+	}
+
+	private String getName() {
+		if (currentElement.getAttributes().getNamedItem("name") != null) {
+			return currentElement.getAttributes().getNamedItem("name").getNodeValue();
+		}
+
+		final NodeList nodeList = currentElement.getChildNodes();
+		String type = "NO_NAME";
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			final Node temp = nodeList.item(i);
+			if ("name".equals(temp.getNodeName())) {
+				type = temp.getTextContent();
+				break;
+			}
+		}
+
+		return type;
+	}
+
+	private List<Class<?>> parseIndividualHandlers(final NodeList handlerList) throws ParsingException {
+		final List<Class<?>> returnValue = new ArrayList<>();
+		for (int i = 0; i < handlerList.getLength(); i++) {
+			final Node current = handlerList.item(i);
 			if ("handler".equals(current.getNodeName())) {
-				String beanName;
+				final String beanName;
 				if (current.getAttributes().getNamedItem("bean") != null) {
 					beanName = current.getAttributes().getNamedItem("bean").getNodeValue();
 				} else {
@@ -59,9 +124,9 @@ class PipelineXMLParser {
 				}
 
 				try {
-					Class<?> type = Class.forName(beanName);
+					final Class<?> type = Class.forName(beanName);
 					returnValue.add(type);
-				} catch (ClassNotFoundException e) {
+				} catch (final ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 			}
@@ -71,10 +136,10 @@ class PipelineXMLParser {
 	}
 
 	private List<Class<?>> getHandlers() throws ParsingException {
-		NodeList nodeList = currentElement.getChildNodes();
+		final NodeList nodeList = currentElement.getChildNodes();
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
+			final Node node = nodeList.item(i);
 			if ("handlers".equals(node.getNodeName())) {
 				return parseIndividualHandlers(node.getChildNodes());
 			}
@@ -87,10 +152,10 @@ class PipelineXMLParser {
 		if (currentElement.getAttributes().getNamedItem("type") != null) {
 			return currentElement.getAttributes().getNamedItem("type").getNodeValue();
 		}
-		NodeList nodeList = currentElement.getChildNodes();
+		final NodeList nodeList = currentElement.getChildNodes();
 		String type = null;
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node temp = nodeList.item(i);
+			final Node temp = nodeList.item(i);
 			if ("type".equals(temp.getNodeName())) {
 				type = temp.getTextContent();
 				break;
@@ -103,7 +168,7 @@ class PipelineXMLParser {
 		return type;
 	}
 
-	public boolean next() throws ParsingException {
+	final boolean next() throws ParsingException {
 		if (pointer + 1 < iterableNodeList.getLength()) {
 			++pointer;
 			fetch();
@@ -117,7 +182,7 @@ class PipelineXMLParser {
 		return false;
 	}
 
-	public PipelineInformation getPipeline() {
+	final PipelineInformation getPipeline() {
 		return currentPipeline;
 	}
 }

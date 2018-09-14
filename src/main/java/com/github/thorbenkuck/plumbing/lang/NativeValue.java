@@ -4,7 +4,7 @@ final class NativeValue<T> implements Value<T> {
 
 	private T value;
 
-	NativeValue(T t) {
+	NativeValue(final T t) {
 		value = t;
 	}
 

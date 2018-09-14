@@ -5,6 +5,7 @@ import com.github.thorbenkuck.plumbing.pipeline.Pipeline;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 
 public interface PipelineRepository {
 
@@ -12,24 +13,17 @@ public interface PipelineRepository {
 		return new NativePipelineRepository();
 	}
 
-	static void setDependencyResolver(ObjectFactory objectFactory) {
-		StaticPipelineRepository.setObjectFactory(objectFactory);
-	}
+	void setDependencyResolver(final ObjectFactory objectFactory);
 
-	static void initialize() throws ParsingException {
-		StaticPipelineRepository.tryLoadXML();
-	}
+	void addXMLTarget(final InputStream inputStream);
 
-	static void initialize(URL url) throws IOException {
-		StaticPipelineRepository.setXMLTarget(url.openStream());
-		initialize();
-	}
+	void addXMLTarget(final URL url) throws IOException;
 
-	static void initialize(InputStream inputStream) {
-		StaticPipelineRepository.setXMLTarget(inputStream);
-		initialize();
-	}
+	void load();
 
-	<T> Pipeline<T> accessPipeline(Class<T> type);
+	void load(final Collection<InputStream> inputStreamCollection);
 
+	<T> Pipeline<T> accessPipeline(final Class<T> type);
+
+	<T> Pipeline<T> accessPipeline(Class<T> type, String name);
 }

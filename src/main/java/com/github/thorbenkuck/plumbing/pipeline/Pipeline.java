@@ -9,25 +9,25 @@ public interface Pipeline<T> {
 		return new NativePipeline<>();
 	}
 
-	void add(Runnable runnable);
+	void add(final Runnable runnable);
 
-	void add(Consumer<T> consumer);
+	void add(final Consumer<T> consumer);
 
-	void add(Function<T, T> function);
+	void add(final Function<T, T> function);
 
-	void addFirst(Runnable runnable);
+	void addFirst(final Runnable runnable);
 
-	void addFirst(Consumer<T> consumer);
+	void addFirst(final Consumer<T> consumer);
 
-	void addFirst(Function<T, T> function);
+	void addFirst(final Function<T, T> function);
 
-	void addLast(Runnable runnable);
+	void addLast(final Runnable runnable);
 
-	void addLast(Consumer<T> consumer);
+	void addLast(final Consumer<T> consumer);
 
-	void addLast(Function<T, T> function);
+	void addLast(final Function<T, T> function);
 
-	T apply(T input);
+	T apply(final T input);
 
 	void breakConnections();
 
@@ -39,11 +39,9 @@ public interface Pipeline<T> {
 
 	PipelineConnection<T> output();
 
-	default void onConnect(Pipeline<T> connected) {
-		System.out.println("Connected ..");
+	default void onConnect(final Pipeline<T> connected) {
 	}
 
-	default void onBrokenPipe(Pipeline<T> connected) {
-		System.out.println("Disconnected ..");
+	default void onBrokenPipe(final Pipeline<T> connected) {
 	}
 }

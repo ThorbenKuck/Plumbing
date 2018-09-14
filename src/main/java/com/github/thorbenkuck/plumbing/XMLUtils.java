@@ -7,48 +7,48 @@ import org.w3c.dom.NodeList;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
-class XMLUtils {
+final class XMLUtils {
 
 	private static final String EXPECTED_ROOT = "pipelines";
 
-	static boolean isRoot(Element element) {
+	static boolean isRoot(final Element element) {
 		return EXPECTED_ROOT.equals(element.getTagName());
 	}
 
-	static boolean isRoot(Node node) {
+	static boolean isRoot(final Node node) {
 		return EXPECTED_ROOT.equals(node.getNodeName());
 	}
 
-	static IterableNodeList walkable(NodeList nodeList) {
+	static IterableNodeList walkable(final NodeList nodeList) {
 		return new IterableNodeList(nodeList);
 	}
 
-	static class IterableNodeList implements NodeList, Iterable<Node> {
+	static final class IterableNodeList implements NodeList, Iterable<Node> {
 
 		private final NodeList core;
 
-		IterableNodeList(NodeList core) {
+		IterableNodeList(final NodeList core) {
 			this.core = core;
 		}
 
-		public void walk(Consumer<Node> nodeConsumer) {
-			for (Node node : this) {
+		public final void walk(final Consumer<Node> nodeConsumer) {
+			for (final Node node : this) {
 				nodeConsumer.accept(node);
 			}
 		}
 
 		@Override
-		public Iterator<Node> iterator() {
+		public final Iterator<Node> iterator() {
 			return new NodeListIterator(core);
 		}
 
 		@Override
-		public Node item(int index) {
+		public final Node item(final int index) {
 			return core.item(index);
 		}
 
 		@Override
-		public int getLength() {
+		public final int getLength() {
 			return core.getLength();
 		}
 

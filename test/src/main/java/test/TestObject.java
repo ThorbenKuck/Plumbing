@@ -1,4 +1,4 @@
 package test;
 
-public class TestObject {
+public final class TestObject {
 }
