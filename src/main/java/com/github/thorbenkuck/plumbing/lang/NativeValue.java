@@ -26,4 +26,11 @@ final class NativeValue<T> implements Value<T> {
 	public final T get() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "Value{" +
+				(value == null ? "empty" : "value=" + value) +
+				'}';
+	}
 }

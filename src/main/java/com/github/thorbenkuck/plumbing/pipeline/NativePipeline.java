@@ -13,6 +13,7 @@ final class NativePipeline<T> implements Pipeline<T> {
 	private final Deque<Function<T, T>> core = new ArrayDeque<>();
 	private final PipelineConnection<T> input = PipelineConnection.input(this);
 	private final PipelineConnection<T> output = PipelineConnection.output(this);
+	private final Value<Boolean> readOutputTransfer = Value.synchronize(false);
 
 	private Function<T, T> wrap(final Consumer<T> consumer) {
 		return new ConsumerWrapper(consumer);
@@ -34,7 +35,11 @@ final class NativePipeline<T> implements Pipeline<T> {
 			}
 		}
 
-		output.transfer(dataValue);
+		if (readOutputTransfer.get()) {
+			output.transfer(dataValue);
+		} else {
+			output.transfer(dataValue.get());
+		}
 		return dataValue.get();
 	}
 

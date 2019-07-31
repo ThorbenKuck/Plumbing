@@ -26,4 +26,11 @@ final class NativeSynchronizedValue<T> implements Value<T> {
 	public final synchronized T get() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "SynchronizedValue{" +
+				(value == null ? "empty" : "value=" + value) +
+				'}';
+	}
 }

@@ -1,6 +1,9 @@
 package com.github.thorbenkuck.plumbing.pipeline;
 
+import com.github.thorbenkuck.plumbing.TypeConverter;
 import com.github.thorbenkuck.plumbing.lang.Value;
+
+import java.util.function.Function;
 
 public interface PipelineConnection<T> {
 
@@ -14,7 +17,9 @@ public interface PipelineConnection<T> {
 
 	void add(final Pipeline<T> pipeline);
 
-	void remove(final Pipeline<T> pipeline);
+	<S> void add(Pipeline<S> pipeline, TypeConverter<T, S> converter);
+
+	void remove(final Function<T, T> pipeline);
 
 	void transfer(final T t);
 
